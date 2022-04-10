@@ -15,6 +15,17 @@ public class CustomerMap {
 
     CustomerNode[][][] map = new CustomerNode[25][25][25];
 
+    public CustomerMap(){
+        for(int i = 0 ; i < 25; i++) {
+            for(int j = 0; j < 25; j++) {
+                for(int k = 0; k < 25; k++) {
+                    map[i][j][k] = null;
+                }
+            }
+        }
+    }
+
+
     public int hashC(char c) {
         return c - 'A';
     }
@@ -73,5 +84,11 @@ public class CustomerMap {
         }
         // cannot find the customer
         return null;
+    }
+
+    public static void main(String[] args) {
+        CustomerMap testMap = new CustomerMap();
+        Customer a1 = new Customer("NAO1931162","Riannon","Septima","61420364080");
+        System.out.println(testMap.hashPut(a1));
     }
 }
