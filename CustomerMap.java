@@ -10,10 +10,11 @@ public class CustomerMap {
     RBTree[][][] map = new RBTree[26][26][26];
 
     public CustomerMap(){
+        Customer nullCustomer = new Customer("000000000","","","");
         for(int i = 0; i < 26;i++) {
             for(int j = 0; j < 26; j++) {
                 for( int k = 0; k < 26; k++){
-                    map[i][j][k] = new RBTree(null);
+                    map[i][j][k] = new RBTree(nullCustomer);
                 }
             }
         }
