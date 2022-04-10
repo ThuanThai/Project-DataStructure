@@ -5,5 +5,4 @@ public class Customer {
     String fName;
     String lName;
     String phone;
-
 }
