@@ -9,56 +9,41 @@ public class CustomerCollection {
     final static int MAX = 113;
     CustomerNode[] table = new CustomerNode[MAX];
 
-    static class CustomerNode {
-        Customer cus;
-        int height;
-        CustomerNode left;
-        CustomerNode right;
 
-        public CustomerNode(Customer cus) {
-            this.cus = cus;
-            this.height = 1;
-            this.left = null;
-            this.right = null;
-        }
-
-
-
-    }
     public int getHeight(CustomerNode node) {
         if (node == null) {
             return 0;
         }
-        return node.height;
+        return node.getHeight();
     }
     private CustomerNode rightRotation(CustomerNode y) {
-        CustomerNode x = y.left;
-        CustomerNode sucX = x.right;
+        CustomerNode x = y.getLeft();
+        CustomerNode sucX = x.getRight();
 
-        x.right = y;
-        y.left = sucX;
+        x.setRight(y);
+        y.setLeft(sucX);
 
         //Updating height
-        x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
-        y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
+        x.setHeight(1 + Math.max(getHeight(x.getLeft()), getHeight(x.getRight())) );
+        y.setHeight(1 + Math.max(getHeight(y.getLeft()), getHeight(y.getRight())));
         return x;
     }
     private CustomerNode leftRotation(CustomerNode x) {
-        CustomerNode y = x.right;
-        CustomerNode sucY = y.left;
+        CustomerNode y = x.getRight();
+        CustomerNode sucY = y.getLeft();
 
-       y.left = x;
-       x.right = sucY;
+       y.setLeft(x);
+       x.setRight(sucY);
 
         //Updating height
-        x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
-        y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
+        x.setHeight(1 + Math.max(getHeight(x.getLeft()), getHeight(x.getRight())));
+        y.setHeight(1 + Math.max(getHeight(y.getLeft()), getHeight(y.getRight())));
         return y;
     }
     private int getBalance(CustomerNode node) {
         if (node == null)
             return 0;
-        return (getHeight(node.left) - getHeight(node.right));
+        return (getHeight(node.getLeft()) - getHeight(node.getRight()));
     }
     public int hash(String id) {
        return Math.abs(id.hashCode()) % MAX;
@@ -69,28 +54,28 @@ public class CustomerCollection {
             table[idx] = new CustomerNode(newCustomer);
             return true;
         }
-        if (newCustomer.cusID.compareTo(table[idx].cus.cusID) < 0)
-            table[idx].left = new CustomerNode(newCustomer);
-        else if (newCustomer.cusID.compareTo(table[idx].cus.cusID) > 0)
-            table[idx].right = new CustomerNode(newCustomer);
+        if (newCustomer.cusID.compareTo(table[idx].getCus().cusID) < 0)
+            table[idx].setLeft(new CustomerNode(newCustomer));
+        else if (newCustomer.cusID.compareTo(table[idx].getCus().cusID) > 0)
+            table[idx].setRight(new CustomerNode(newCustomer));
         else
            return false;
 
-        table[idx].height = 1 + Math.max(getHeight(table[idx].left), getHeight(table[idx].right));
+        table[idx].setHeight(1 + Math.max(getHeight(table[idx].getLeft()), getHeight(table[idx].getRight())));
         int balance = getBalance(table[idx]);
 
-        if (balance > 1 && newCustomer.cusID.compareTo(table[idx].left.cus.cusID) < 0) {
+        if (balance > 1 && newCustomer.cusID.compareTo(table[idx].getLeft().getCus().cusID) < 0) {
             table[idx] = rightRotation(table[idx]);
         }
-        else if (balance > 1 && newCustomer.cusID.compareTo(table[idx].left.cus.cusID) > 0) {
-            table[idx].left = leftRotation(table[idx].left);
+        else if (balance > 1 && newCustomer.cusID.compareTo(table[idx].getLeft().getCus().cusID) > 0) {
+            table[idx].setLeft(leftRotation(table[idx].getLeft()));
             table[idx] = rightRotation(table[idx]);
         }
-        else if (balance < -1 && newCustomer.cusID.compareTo(table[idx].left.cus.cusID) > 0) {
+        else if (balance < -1 && newCustomer.cusID.compareTo(table[idx].getLeft().getCus().cusID) > 0) {
             table[idx] = leftRotation(table[idx]);
         }
-        else if (balance < -1 && newCustomer.cusID.compareTo(table[idx].left.cus.cusID) < 0) {
-            table[idx].right = rightRotation(table[idx].right);
+        else if (balance < -1 && newCustomer.cusID.compareTo(table[idx].getLeft().getCus().cusID) < 0) {
+            table[idx].setRight(rightRotation(table[idx].getRight()));
             table[idx] = leftRotation(table[idx]);
         }
         return true;
@@ -121,38 +106,5 @@ public class CustomerCollection {
 //        }
 //        return node;
 //    }
-    public void readFile(String fileName) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(fileName));
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                Customer newCustomer = new Customer();
-                String[] row = line.split(",");
-                newCustomer.cusID = row[0];
-                newCustomer.fName = row[1];
-                newCustomer.lName = row[2];
-                newCustomer.phone = row[3];
-                put(newCustomer);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void main(String[] args) {
-        String myFile = "customer.csv";
-        CustomerCollection col = new CustomerCollection();
-        col.readFile(myFile);
-
-        for (int  i = 0; i < MAX; i++) {
-            System.out.println(col.table[i].cus.fName);
-        }
-    }
+    
 }

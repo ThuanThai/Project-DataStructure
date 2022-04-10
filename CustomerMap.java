@@ -1,64 +1,42 @@
 package GroupAssignment;
 
-class CustomerNode {
-    Customer data;
-    CustomerNode next;
 
-    public CustomerNode() {};
-    public CustomerNode(Customer cus) {
-        this.data = cus;
-        this.next = null;
-    }
-}
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class CustomerMap {
 
-    CustomerNode[][][] map = new CustomerNode[25][25][25];
+    CustomerCollection[][][] map = new CustomerCollection[26][26][26];
 
     public CustomerMap(){
-        for(int i = 0 ; i < 25; i++) {
-            for(int j = 0; j < 25; j++) {
-                for(int k = 0; k < 25; k++) {
-                    map[i][j][k] = null;
+        for(int i = 0; i < 26;i++) {
+            for(int j = 0; j < 26; j++) {
+                for( int k = 0; k < 26; k++){
+                    map[i][j][k] = new CustomerCollection();
                 }
             }
         }
     }
 
-
     public int hashC(char c) {
         return c - 'A';
     }
 
-    public boolean hashPut(Customer customer) {
+    public void hashPut(Customer newCustomer) {
         // hash coordinate
-        int x = hashC(customer.cusID.charAt(0));
-        int y = hashC(customer.cusID.charAt(1));
-        int z = hashC(customer.cusID.charAt(2));
+        int x = hashC(newCustomer.cusID.charAt(0));
+        int y = hashC(newCustomer.cusID.charAt(1));
+        int z = hashC(newCustomer.cusID.charAt(2));
+        System.out.println("Coordinate: " + x + " - " + y + " - " + z);
 
-        CustomerNode newCustomer = new CustomerNode(customer);
-
-        // if the slot is empty put the customer in.
-        if(map[x][y][z] == null)  {
-            map[x][y][z] = newCustomer;
-            return true;
+        // put the new customer in the customerCollection at x,y,z coordinate.
+        try {
+            map[x][y][z].put(newCustomer);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // skip first line because "customer_id" cause index out of bound.
+            System.out.println("skip first line");
         }
-
-        // if the slot is occupied:
-        if(map[x][y][z] != null && map[x][y][z].data != customer) {
-            CustomerNode p = new CustomerNode();
-            p = map[x][y][z];
-            // travel to the end of the list
-            while(p != null) {
-                if(p.data == customer) {
-                    // the customer already exists
-                    return false;
-                } else p = p.next;
-            }
-            // add the new customer
-            p.next = newCustomer;
-        }
-        return true;
     }
 
     public Customer searchFull(String Id) {
@@ -71,25 +49,40 @@ public class CustomerMap {
             // no customer found
             return null;
         } else {
-            // check the list of customer
-            CustomerNode p = new CustomerNode();
-            p = map[x][y][z];
-            // travel and check to the end of the list
-            while(p != null) {
-                if(p.data.cusID == Id) {
-                    // the customer already exists
-                    return p.data;
-                } else p = p.next;
-            }
+            // not yet develop
         }
         // cannot find the customer
         return null;
     }
 
+    public void readFile(String fileName) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(fileName));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                Customer newCustomer = new Customer();
+                String[] column = line.split(",");
+                newCustomer.cusID = column[0];
+                newCustomer.fName = column[1];
+                newCustomer.lName = column[2];
+                newCustomer.phone = column[3];
+                hashPut(newCustomer);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args) {
-//        CustomerMap testMap = new CustomerMap();
-//        Customer a1 = new Customer("NAO1931162","Riannon","Septima","61420364080");
-//        System.out.println(testMap.hashPut(a1));
-        System.out.println('Z' - 'A' + 1);
+        String myFile = "customer.csv";
+        CustomerMap col = new CustomerMap();
+        col.readFile(myFile);
     }
 }
