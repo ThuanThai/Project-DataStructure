@@ -7,13 +7,13 @@ import java.io.IOException;
 
 public class CustomerMap {
 
-    CustomerCollection[][][] map = new CustomerCollection[26][26][26];
+    RBTree[][][] map = new RBTree[26][26][26];
 
     public CustomerMap(){
         for(int i = 0; i < 26;i++) {
             for(int j = 0; j < 26; j++) {
                 for( int k = 0; k < 26; k++){
-                    map[i][j][k] = new CustomerCollection();
+                    map[i][j][k] = new RBTree(null);
                 }
             }
         }
@@ -31,7 +31,7 @@ public class CustomerMap {
 
         // put the new customer in the customerCollection at x,y,z coordinate.
         try {
-            map[x][y][z].put(newCustomer);
+            map[x][y][z].insertNewNode(newCustomer);
         } catch (ArrayIndexOutOfBoundsException e) {
             // skip first line because "customer_id" cause index out of bound.
         }

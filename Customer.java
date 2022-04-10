@@ -13,4 +13,8 @@ public class Customer {
         this.lName = lName;
         this.phone = phone;
     }
+
+    public int getCode() {
+        return Integer.parseInt(cusID.substring(3));
+    }
 }
