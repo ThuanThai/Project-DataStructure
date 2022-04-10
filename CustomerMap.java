@@ -87,8 +87,9 @@ public class CustomerMap {
     }
 
     public static void main(String[] args) {
-        CustomerMap testMap = new CustomerMap();
-        Customer a1 = new Customer("NAO1931162","Riannon","Septima","61420364080");
-        System.out.println(testMap.hashPut(a1));
+//        CustomerMap testMap = new CustomerMap();
+//        Customer a1 = new Customer("NAO1931162","Riannon","Septima","61420364080");
+//        System.out.println(testMap.hashPut(a1));
+        System.out.println('Z' - 'A' + 1);
     }
 }
