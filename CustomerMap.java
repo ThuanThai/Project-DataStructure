@@ -28,14 +28,12 @@ public class CustomerMap {
         int x = hashC(newCustomer.cusID.charAt(0));
         int y = hashC(newCustomer.cusID.charAt(1));
         int z = hashC(newCustomer.cusID.charAt(2));
-        System.out.println("Coordinate: " + x + " - " + y + " - " + z);
 
         // put the new customer in the customerCollection at x,y,z coordinate.
         try {
             map[x][y][z].put(newCustomer);
         } catch (ArrayIndexOutOfBoundsException e) {
             // skip first line because "customer_id" cause index out of bound.
-            System.out.println("skip first line");
         }
     }
 
@@ -82,7 +80,13 @@ public class CustomerMap {
 
     public static void main(String[] args) {
         String myFile = "customer.csv";
+        long startInit = System.currentTimeMillis();
         CustomerMap col = new CustomerMap();
+        long endInit = System.currentTimeMillis();
+        System.out.println("Init time: " + (endInit - startInit));
+        long startRead = System.currentTimeMillis();
         col.readFile(myFile);
+        long endRead = System.currentTimeMillis();
+        System.out.println("Read file time: " + (endRead - startRead));
     }
 }
