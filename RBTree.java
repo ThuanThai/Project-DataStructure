@@ -19,6 +19,8 @@ class RBCustomerNode {
         this.rightChild = right;
         this.color = 1;
     }
+
+    public RBCustomerNode(){};
 }
 public class RBTree {
     private static RBCustomerNode nullNode;   //define null node
@@ -38,14 +40,18 @@ public class RBTree {
         nullNode.rightChild = nullNode;
     }
 
-    public RBTree(Customer header)
+    public RBTree()
     {
-        this.header = new RBCustomerNode(header);
+        this.header = new RBCustomerNode();
         this.header.leftChild = nullNode;
         this.header.rightChild = nullNode;
     }
 
     public void insertNewNode(Customer newCustomer) {
+        if(header.customer == null) {
+            header = new RBCustomerNode(newCustomer, nullNode, nullNode);
+            return;
+        }
         current = parent = grand = header;      //set header value to current, parent, and grand node
         nullNode.customer = newCustomer;          //set newElement to the element of the null node
         //repeat statements until the element of the current node will not equal to the value of the newElement
@@ -130,7 +136,7 @@ public class RBTree {
     // create nodesInTree() method for getting total number of nodes in a tree
     public int nodesInTree()
     {
-        return nodesInTree(header.rightChild);
+        return nodesInTree(header);
     }
     private int nodesInTree(RBCustomerNode node)
     {
@@ -143,5 +149,23 @@ public class RBTree {
             size = size + nodesInTree(node.rightChild);
             return size;
         }
+    }
+
+    public void print() {
+        if(header.customer != null) {
+            System.out.println(header.customer.cusID + " " + header.customer.fName + " " + header.customer.lName + " " + header.customer.phone);
+        }
+    }
+
+    public static void main(String[] args) {
+        Customer anh = new Customer("ICP3081160","Antonietta","Philoo" ,"13472448036");
+        Customer anh1 = new Customer("ICP30811602","Antonietta","Philoo" ,"13472448036");
+        Customer anh2 = new Customer("ICP30832602","Antonietta","Philoo" ,"13472448036");
+        Customer anh3 = new Customer("ICP3081122","Antonietta","Philoo" ,"13472448036");
+        RBTree testTree = new RBTree();
+        testTree.insertNewNode(anh1);
+        testTree.insertNewNode(anh2);
+        testTree.insertNewNode(anh3);
+        System.out.println(testTree.header.leftChild.customer.cusID);
     }
 }

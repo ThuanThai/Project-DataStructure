@@ -10,11 +10,11 @@ public class CustomerMap {
     RBTree[][][] map = new RBTree[26][26][26];
 
     public CustomerMap(){
-        Customer nullCustomer = new Customer("000000000","","","");
+        //Customer nullCustomer = new Customer("0000","","","");
         for(int i = 0; i < 26;i++) {
             for(int j = 0; j < 26; j++) {
                 for( int k = 0; k < 26; k++){
-                    map[i][j][k] = new RBTree(nullCustomer);
+                    map[i][j][k] = new RBTree();
                 }
             }
         }
@@ -33,6 +33,7 @@ public class CustomerMap {
         // put the new customer in the customerCollection at x,y,z coordinate.
         try {
             map[x][y][z].insertNewNode(newCustomer);
+            //System.out.println(x + " - " + y + " - " + z);
         } catch (ArrayIndexOutOfBoundsException e) {
             // skip first line because "customer_id" cause index out of bound.
         }
@@ -53,6 +54,19 @@ public class CustomerMap {
         // cannot find the customer
         return null;
     }
+
+    public void printAll() {
+        for(int i = 0; i < 26;i++) {
+            for(int j = 0; j < 26; j++) {
+                for( int k = 0; k < 26; k++){
+                    if(map[i][j][k] != null) {
+                        map[i][j][k].print();
+                    }
+                }
+            }
+        }
+    }
+
 
     public void readFile(String fileName) {
         BufferedReader reader = null;
@@ -89,5 +103,6 @@ public class CustomerMap {
         col.readFile(myFile);
         long endRead = System.currentTimeMillis();
         System.out.println("Read file time: " + (endRead - startRead));
+        col.printAll();
     }
 }
