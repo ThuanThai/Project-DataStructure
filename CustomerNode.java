@@ -41,4 +41,6 @@ public class CustomerNode {
         this.left = null;
         this.right = null;
     }
+    public CustomerNode() {
+    }
 }

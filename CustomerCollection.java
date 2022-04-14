@@ -5,109 +5,35 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class CustomerCollection {
-    final static int MAX = 113;
-    CustomerNode[] table = new CustomerNode[MAX];
+    CustomerTree[][][] map = new CustomerTree[26][26][26];
 
-
-    public int getHeight(CustomerNode node) {
-        if (node == null) {
-            return 0;
+    public CustomerCollection(){
+        for(int i = 0; i < 26;i++) {
+            for(int j = 0; j < 26; j++) {
+                for( int k = 0; k < 26; k++){
+                    map[i][j][k] = new CustomerTree();
+                }
+            }
         }
-        return node.getHeight();
     }
-    private CustomerNode rightRotation(CustomerNode y) {
-        CustomerNode x = y.getLeft();
-        CustomerNode sucX = x.getRight();
 
-        x.setRight(y);
-        y.setLeft(sucX);
+    public int hashC(char c) {
+        return c - 'A';
+    }
 
-        //Updating height
-        x.setHeight(1 + Math.max(getHeight(x.getLeft()), getHeight(x.getRight())) );
-        y.setHeight(1 + Math.max(getHeight(y.getLeft()), getHeight(y.getRight())));
-        return x;
-    }
-    private CustomerNode leftRotation(CustomerNode x) {
-        CustomerNode y = x.getRight();
-        CustomerNode sucY = y.getLeft();
-
-       y.setLeft(x);
-       x.setRight(sucY);
-
-        //Updating height
-        x.setHeight(1 + Math.max(getHeight(x.getLeft()), getHeight(x.getRight())));
-        y.setHeight(1 + Math.max(getHeight(y.getLeft()), getHeight(y.getRight())));
-        return y;
-    }
-    private int getBalance(CustomerNode node) {
-        if (node == null)
-            return 0;
-        return (getHeight(node.getLeft()) - getHeight(node.getRight()));
-    }
-    public int hash(String id) {
-       return Math.abs(id.hashCode()) % MAX;
-    }
     public boolean put(Customer newCustomer) {
-        int idx = hash(newCustomer.cusID);
-        if (table[idx] == null) {
-            table[idx] = new CustomerNode(newCustomer);
-            return true;
+        // coordinate
+        int x = hashC(newCustomer.cusID.charAt(0));
+        int y = hashC(newCustomer.cusID.charAt(1));
+        int z = hashC(newCustomer.cusID.charAt(2));
+        if ( map[x][y][z].head == null) {
+            map[x][y][z].head = new CustomerNode(newCustomer);
         }
-        if (newCustomer.cusID.compareTo(table[idx].getCus().cusID) < 0)
-            table[idx].setLeft(new CustomerNode(newCustomer));
-        else if (newCustomer.cusID.compareTo(table[idx].getCus().cusID) > 0)
-            table[idx].setRight(new CustomerNode(newCustomer));
         else
-           return false;
-
-        table[idx].setHeight(1 + Math.max(getHeight(table[idx].getLeft()), getHeight(table[idx].getRight())));
-        int balance = getBalance(table[idx]);
-
-        if (balance > 1 && newCustomer.cusID.compareTo(table[idx].getLeft().getCus().cusID) < 0) {
-            table[idx] = rightRotation(table[idx]);
-        }
-        else if (balance > 1 && newCustomer.cusID.compareTo(table[idx].getLeft().getCus().cusID) > 0) {
-            table[idx].setLeft(leftRotation(table[idx].getLeft()));
-            table[idx] = rightRotation(table[idx]);
-        }
-        else if (balance < -1 && newCustomer.cusID.compareTo(table[idx].getLeft().getCus().cusID) > 0) {
-            table[idx] = leftRotation(table[idx]);
-        }
-        else if (balance < -1 && newCustomer.cusID.compareTo(table[idx].getLeft().getCus().cusID) < 0) {
-            table[idx].setRight(rightRotation(table[idx].getRight()));
-            table[idx] = leftRotation(table[idx]);
-        }
+            map[x][y][z].putInTree(map[x][y][z].head, newCustomer);
         return true;
     }
-//    private CustomerNode insertTree(CustomerNode node, Customer newCustomer) {
-//        if (newCustomer.cusID.compareTo(node.cus.cusID) < 0)
-//            node.left = new CustomerNode(newCustomer);
-//        else if (newCustomer.cusID.compareTo(node.cus.cusID) > 0)
-//            node.right = new CustomerNode(newCustomer);
-//        else
-//            return node;
-//        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
-//        int balance = getBalance(node);
-//
-//        if (balance > 1 && newCustomer.cusID.compareTo(node.left.cus.cusID) < 0) {
-//            return rightRotation(node);
-//        }
-//        else if (balance > 1 && newCustomer.cusID.compareTo(node.left.cus.cusID) > 0) {
-//            node.left = leftRotation(node.left);
-//            return rightRotation(node);
-//        }
-//        else if (balance < -1 && newCustomer.cusID.compareTo(node.left.cus.cusID) > 0) {
-//            return leftRotation(node);
-//        }
-//        else if (balance < -1 && newCustomer.cusID.compareTo(node.left.cus.cusID) < 0) {
-//            node.right = rightRotation(node.right);
-//            return leftRotation(node);
-//        }
-//        return node;
-//    }
-<<<<<<< Updated upstream
 
-=======
     public void readFile(String fileName) {
         BufferedReader reader = null;
         try {
@@ -120,7 +46,12 @@ public class CustomerCollection {
                 newCustomer.fName = row[1];
                 newCustomer.lName = row[2];
                 newCustomer.phone = row[3];
-                put(newCustomer);
+                try{
+                    put(newCustomer);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    // avoid fisrt line
+                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -133,12 +64,31 @@ public class CustomerCollection {
         }
     }
 
+    public CustomerNode search(String id) {
+        int x = hashC(id.charAt(0));
+        int y = hashC(id.charAt(1));
+        int z = hashC(id.charAt(2));
+        return map[x][y][z].searchInTree(map[x][y][z].head, id);
+    }
+
     public static void main(String[] args) {
         String myFile = "customer.csv";
         CustomerCollection col = new CustomerCollection();
         long start = System.currentTimeMillis();
         col.readFile(myFile);
-        System.out.println(System.currentTimeMillis() - start);
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
+        long startS = System.currentTimeMillis();
+        System.out.println(col.search("NAO1931262").getCus().fName);
+        System.out.println(col.search("NAO1931162").getCus().fName);
+        if(col.search("NAO1933232") != null) {
+            System.out.println(col.search("NAO1933232").getCus().fName);
+        }
+        System.out.println(col.search("NAO1421234").getCus().fName);
+        System.out.println(col.search("UDY9177732").getCus().fName);
+        System.out.println(col.search("NAO1413234").getCus().fName);
+
+        long endS = System.currentTimeMillis();
+        System.out.println(endS - startS);
     }
->>>>>>> Stashed changes
 }
