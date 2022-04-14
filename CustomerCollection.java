@@ -22,7 +22,7 @@ public class CustomerCollection {
     }
 
     public boolean put(Customer newCustomer) {
-        // coordinate
+        // coordinator
         int x = hashC(newCustomer.cusID.charAt(0));
         int y = hashC(newCustomer.cusID.charAt(1));
         int z = hashC(newCustomer.cusID.charAt(2));
@@ -30,7 +30,7 @@ public class CustomerCollection {
             map[x][y][z].head = new CustomerNode(newCustomer);
         }
         else
-            map[x][y][z].putInTree(map[x][y][z].head, newCustomer);
+            map[x][y][z].head = map[x][y][z].putInTree(map[x][y][z].head, newCustomer);
         return true;
     }
 
@@ -63,7 +63,6 @@ public class CustomerCollection {
             }
         }
     }
-
     public CustomerNode search(String id) {
         int x = hashC(id.charAt(0));
         int y = hashC(id.charAt(1));
@@ -76,19 +75,10 @@ public class CustomerCollection {
         CustomerCollection col = new CustomerCollection();
         long start = System.currentTimeMillis();
         col.readFile(myFile);
-        long end = System.currentTimeMillis();
-        System.out.println(end - start);
-        long startS = System.currentTimeMillis();
         System.out.println(col.search("NAO1931262").getCus().fName);
-        System.out.println(col.search("NAO1931162").getCus().fName);
-        if(col.search("NAO1933232") != null) {
-            System.out.println(col.search("NAO1933232").getCus().fName);
-        }
-        System.out.println(col.search("NAO1421234").getCus().fName);
-        System.out.println(col.search("UDY9177732").getCus().fName);
-        System.out.println(col.search("NAO1413234").getCus().fName);
-
-        long endS = System.currentTimeMillis();
-        System.out.println(endS - startS);
+//        System.out.println(col.search("NAO1931162").getCus().fName);
+//        System.out.println(col.search("NAO1933232").getCus().fName);
+//        System.out.println(col.search("NAO1421234").getCus().fName);
+//        System.out.println(col.search("NAO1423234").getCus().fName);
     }
 }

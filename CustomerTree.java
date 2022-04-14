@@ -62,10 +62,10 @@ public class CustomerTree {
             node.setLeft(leftRotation(node.getLeft()));
             return rightRotation(node);
         }
-        if (balance < -1 && newCustomer.cusID.compareTo(node.getLeft().getCus().cusID) > 0) {
+        if (balance < -1 && newCustomer.cusID.compareTo(node.getRight().getCus().cusID) > 0) {
             return leftRotation(node);
         }
-        if (balance < -1 && newCustomer.cusID.compareTo(node.getLeft().getCus().cusID) < 0) {
+        if (balance < -1 && newCustomer.cusID.compareTo(node.getRight().getCus().cusID) < 0) {
             node.setRight(rightRotation(node.getRight()));
             return leftRotation(node);
         }
