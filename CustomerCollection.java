@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class CustomerCollection {
     final static int MAX = 113;
@@ -59,7 +61,13 @@ public class CustomerCollection {
         return (getHeight(node.left) - getHeight(node.right));
     }
     public int hash(String id) {
-       return Math.abs(id.hashCode()) % MAX;
+        int res = 0;
+        int n = 3;
+        for (int i = 0; i < 3; i++) {
+            char c = id.charAt(i);
+            res += (int) c * Math.pow(31, --n);
+        }
+        return res % MAX;
     }
     public CustomerNode putInTree(CustomerNode node, Customer newCustomer) {
         if (node == null)
@@ -96,7 +104,7 @@ public class CustomerCollection {
             table[idx] = new CustomerNode(newCustomer);
             return;
         }
-        putInTree(table[idx], newCustomer);
+        table[idx] = putInTree(table[idx], newCustomer);
     }
     public void readFile(String fileName) {
         BufferedReader reader = null;
@@ -123,7 +131,7 @@ public class CustomerCollection {
         }
     }
     private CustomerNode searchInTree(CustomerNode node, String id) {
-        if (id.equals(node.cus.cusID) || node == null)
+        if (node == null || id.equals(node.cus.cusID))
             return node;
         if (id.compareTo(node.cus.cusID) < 0)
             return searchInTree(node.left, id);
@@ -138,13 +146,42 @@ public class CustomerCollection {
             return searchInTree(table[idx], id);
     }
 
+    private void printTree(CustomerNode node) {
+        if (node == null)
+            return;
+        printTree(node.left);
+        System.out.println(node.cus.fName);
+        printTree(node.right);
+    }
+
+    public void print() {
+        for (CustomerNode x : table) {
+            if (x != null)
+                printTree(x);
+        }
+    }
+
+    public void searchPartial(String id) {
+        int idx = hash(id);
+        int len = id.length();
+        Queue<CustomerNode> queue = new LinkedList<>();
+        queue.add(table[idx]);
+        while (!queue.isEmpty()) {
+            CustomerNode root = queue.remove();
+            if(root.cus.cusID.substring(0, len).equals(id)) {
+                System.out.println(root.cus.cusID + " " + root.cus.fName);
+            }
+            if (root.left != null)
+                queue.add(root.left);
+            if (root.right != null)
+                queue.add(root.right);
+        }
+    }
 
     public static void main(String[] args) {
         String myFile = "customer.csv";
         CustomerCollection col = new CustomerCollection();
         col.readFile(myFile);
-        System.out.println(col.search("NAO1931162").cus.fName);
-        System.out.println(col.search("NAO1941162").cus.fName);
-        System.out.println(col.search("NAO1921162").cus.fName);
+        col.searchPartial("NAO1931");
     }
 }
