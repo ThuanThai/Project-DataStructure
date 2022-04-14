@@ -1,7 +1,6 @@
 package GroupAssignment;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -106,5 +105,40 @@ public class CustomerCollection {
 //        }
 //        return node;
 //    }
+<<<<<<< Updated upstream
 
+=======
+    public void readFile(String fileName) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(fileName));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                Customer newCustomer = new Customer();
+                String[] row = line.split(",");
+                newCustomer.cusID = row[0];
+                newCustomer.fName = row[1];
+                newCustomer.lName = row[2];
+                newCustomer.phone = row[3];
+                put(newCustomer);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        String myFile = "customer.csv";
+        CustomerCollection col = new CustomerCollection();
+        long start = System.currentTimeMillis();
+        col.readFile(myFile);
+        System.out.println(System.currentTimeMillis() - start);
+    }
+>>>>>>> Stashed changes
 }
