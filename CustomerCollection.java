@@ -22,8 +22,6 @@ public class CustomerCollection {
             this.right = null;
         }
 
-
-
     }
     public int getHeight(CustomerNode node) {
         if (node == null) {
@@ -63,64 +61,43 @@ public class CustomerCollection {
     public int hash(String id) {
        return Math.abs(id.hashCode()) % MAX;
     }
-    public boolean put(Customer newCustomer) {
+    public CustomerNode putInTree(CustomerNode node, Customer newCustomer) {
+        if (node == null)
+            return new CustomerNode(newCustomer);
+        if (newCustomer.cusID.compareTo(node.cus.cusID) < 0)
+            node.left = putInTree(node.left, newCustomer);
+        else if (newCustomer.cusID.compareTo(node.cus.cusID) > 0)
+            node.right = putInTree(node.right, newCustomer);
+        else
+            return node;
+
+       node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        int balance = getBalance(node);
+
+        if (balance > 1 && newCustomer.cusID.compareTo(node.left.cus.cusID) < 0) {
+            return rightRotation(node);
+        }
+        else if (balance > 1 && newCustomer.cusID.compareTo(node.left.cus.cusID) > 0) {
+            node.left = leftRotation(node.left);
+            node = rightRotation(node);
+        }
+        else if (balance < -1 && newCustomer.cusID.compareTo(node.right.cus.cusID) > 0) {
+            return leftRotation(node);
+        }
+        else if (balance < -1 && newCustomer.cusID.compareTo(node.right.cus.cusID) < 0) {
+           node.right = rightRotation(node.right);
+           return leftRotation(node);
+        }
+        return node;
+    }
+    public void put(Customer newCustomer) {
         int idx = hash(newCustomer.cusID);
         if (table[idx] == null) {
             table[idx] = new CustomerNode(newCustomer);
-            return true;
+            return;
         }
-        if (newCustomer.cusID.compareTo(table[idx].cus.cusID) < 0)
-            table[idx].left = new CustomerNode(newCustomer);
-        else if (newCustomer.cusID.compareTo(table[idx].cus.cusID) > 0)
-            table[idx].right = new CustomerNode(newCustomer);
-        else
-           return false;
-
-        table[idx].height = 1 + Math.max(getHeight(table[idx].left), getHeight(table[idx].right));
-        int balance = getBalance(table[idx]);
-
-        if (balance > 1 && newCustomer.cusID.compareTo(table[idx].left.cus.cusID) < 0) {
-            table[idx] = rightRotation(table[idx]);
-        }
-        else if (balance > 1 && newCustomer.cusID.compareTo(table[idx].left.cus.cusID) > 0) {
-            table[idx].left = leftRotation(table[idx].left);
-            table[idx] = rightRotation(table[idx]);
-        }
-        else if (balance < -1 && newCustomer.cusID.compareTo(table[idx].left.cus.cusID) > 0) {
-            table[idx] = leftRotation(table[idx]);
-        }
-        else if (balance < -1 && newCustomer.cusID.compareTo(table[idx].left.cus.cusID) < 0) {
-            table[idx].right = rightRotation(table[idx].right);
-            table[idx] = leftRotation(table[idx]);
-        }
-        return true;
+        putInTree(table[idx], newCustomer);
     }
-//    private CustomerNode insertTree(CustomerNode node, Customer newCustomer) {
-//        if (newCustomer.cusID.compareTo(node.cus.cusID) < 0)
-//            node.left = new CustomerNode(newCustomer);
-//        else if (newCustomer.cusID.compareTo(node.cus.cusID) > 0)
-//            node.right = new CustomerNode(newCustomer);
-//        else
-//            return node;
-//        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
-//        int balance = getBalance(node);
-//
-//        if (balance > 1 && newCustomer.cusID.compareTo(node.left.cus.cusID) < 0) {
-//            return rightRotation(node);
-//        }
-//        else if (balance > 1 && newCustomer.cusID.compareTo(node.left.cus.cusID) > 0) {
-//            node.left = leftRotation(node.left);
-//            return rightRotation(node);
-//        }
-//        else if (balance < -1 && newCustomer.cusID.compareTo(node.left.cus.cusID) > 0) {
-//            return leftRotation(node);
-//        }
-//        else if (balance < -1 && newCustomer.cusID.compareTo(node.left.cus.cusID) < 0) {
-//            node.right = rightRotation(node.right);
-//            return leftRotation(node);
-//        }
-//        return node;
-//    }
     public void readFile(String fileName) {
         BufferedReader reader = null;
         try {
@@ -145,14 +122,29 @@ public class CustomerCollection {
             }
         }
     }
+    private CustomerNode searchInTree(CustomerNode node, String id) {
+        if (id.equals(node.cus.cusID) || node == null)
+            return node;
+        if (id.compareTo(node.cus.cusID) < 0)
+            return searchInTree(node.left, id);
+        else
+            return searchInTree(node.right, id);
+    }
+    public CustomerNode search(String id) {
+        int idx = hash(id);
+        if (table[idx].cus.cusID.equals(id))
+            return table[idx];
+        else
+            return searchInTree(table[idx], id);
+    }
+
 
     public static void main(String[] args) {
         String myFile = "customer.csv";
         CustomerCollection col = new CustomerCollection();
         col.readFile(myFile);
-
-        for (int  i = 0; i < MAX; i++) {
-            System.out.println(col.table[i].cus.fName);
-        }
+        System.out.println(col.search("NAO1931162").cus.fName);
+        System.out.println(col.search("NAO1941162").cus.fName);
+        System.out.println(col.search("NAO1921162").cus.fName);
     }
 }
