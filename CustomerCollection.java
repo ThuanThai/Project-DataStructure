@@ -69,7 +69,7 @@ public class CustomerCollection {
         }
         return res % MAX;
     }
-    public CustomerNode putInTree(CustomerNode node, Customer newCustomer) {
+    private CustomerNode putInTree(CustomerNode node, Customer newCustomer) {
         if (node == null)
             return new CustomerNode(newCustomer);
         if (newCustomer.cusID.compareTo(node.cus.cusID) < 0)
@@ -163,12 +163,11 @@ public class CustomerCollection {
 
     public void searchPartial(String id) {
         int idx = hash(id);
-        int len = id.length();
         Queue<CustomerNode> queue = new LinkedList<>();
         queue.add(table[idx]);
         while (!queue.isEmpty()) {
             CustomerNode root = queue.remove();
-            if(root.cus.cusID.substring(0, len).equals(id)) {
+            if(root.cus.cusID.contains(id)) {
                 System.out.println(root.cus.cusID + " " + root.cus.fName);
             }
             if (root.left != null)
@@ -182,6 +181,9 @@ public class CustomerCollection {
         String myFile = "customer.csv";
         CustomerCollection col = new CustomerCollection();
         col.readFile(myFile);
+        long start = System.currentTimeMillis();
         col.searchPartial("NAO1931");
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
     }
 }
