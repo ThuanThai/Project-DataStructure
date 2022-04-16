@@ -1,31 +1,54 @@
 package GroupAssignment;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class CustomerCollection {
-    CustomerTree[][][] map = new CustomerTree[26][26][26];
+    final static int MAX = 113;
+    CustomerNode[] table = new CustomerNode[MAX];
 
-    public CustomerCollection(){
-        for(int i = 0; i < 26;i++) {
-            for(int j = 0; j < 26; j++) {
-                for( int k = 0; k < 26; k++){
-                    map[i][j][k] = new CustomerTree();
-                }
-            }
+    static class CustomerNode {
+        Customer cus;
+        int height;
+        CustomerNode left;
+        CustomerNode right;
+
+        public CustomerNode(Customer cus) {
+            this.cus = cus;
+            this.height = 1;
+            this.left = null;
+            this.right = null;
         }
 
     }
-
-    public int hashC(char c) {
-        return c - 'A';
+    public int getHeight(CustomerNode node) {
+        if (node == null) {
+            return 0;
+        }
+        return node.height;
     }
+    private CustomerNode rightRotation(CustomerNode y) {
+        CustomerNode x = y.left;
+        CustomerNode sucX = x.right;
 
-       y.left = x;
-       x.right = sucY;
+        x.right = y;
+        y.left = sucX;
+
+        //Updating height
+        x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
+        y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
+        return x;
+    }
+    private CustomerNode leftRotation(CustomerNode x) {
+        CustomerNode y = x.right;
+        CustomerNode sucY = y.left;
+
+        y.left = x;
+        x.right = sucY;
 
         //Updating height
         x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
@@ -56,7 +79,7 @@ public class CustomerCollection {
         else
             return node;
 
-       node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
         int balance = getBalance(node);
 
         if (balance > 1 && newCustomer.cusID.compareTo(node.left.cus.cusID) < 0) {
@@ -70,8 +93,8 @@ public class CustomerCollection {
             return leftRotation(node);
         }
         else if (balance < -1 && newCustomer.cusID.compareTo(node.right.cus.cusID) < 0) {
-           node.right = rightRotation(node.right);
-           return leftRotation(node);
+            node.right = rightRotation(node.right);
+            return leftRotation(node);
         }
         return node;
     }
@@ -95,12 +118,7 @@ public class CustomerCollection {
                 newCustomer.fName = row[1];
                 newCustomer.lName = row[2];
                 newCustomer.phone = row[3];
-                try{
-                    put(newCustomer);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    // avoid fisrt line
-                }
-
+                put(newCustomer);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -162,7 +180,6 @@ public class CustomerCollection {
     public static void main(String[] args) {
         String myFile = "customer.csv";
         CustomerCollection col = new CustomerCollection();
-        long start = System.currentTimeMillis();
         col.readFile(myFile);
         long start = System.currentTimeMillis();
         col.searchPartial("NAO1931");
