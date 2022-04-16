@@ -165,10 +165,15 @@ public class CustomerCollection {
         int idx = hash(id);
         Queue<CustomerNode> queue = new LinkedList<>();
         queue.add(table[idx]);
+        System.out.printf("%-20s%-20s%-20s%-20s", "ID","FIRST NAME","LAST NAME","PHONE NUMBER");
+        System.out.println();
         while (!queue.isEmpty()) {
             CustomerNode root = queue.remove();
             if(root.cus.cusID.contains(id)) {
-                System.out.println(root.cus.cusID + " " + root.cus.fName);
+                System.out.printf("%-20s%-20s%-20s%-20s",
+                        root.cus.cusID,root.cus.fName,
+                        root.cus.lName,root.cus.phone);
+                System.out.println();
             }
             if (root.left != null)
                 queue.add(root.left);
@@ -182,7 +187,7 @@ public class CustomerCollection {
         CustomerCollection col = new CustomerCollection();
         col.readFile(myFile);
         long start = System.currentTimeMillis();
-        col.searchPartial("NAO1931");
+        col.searchPartial("NAO");
         long end = System.currentTimeMillis();
         System.out.println(end - start);
     }
