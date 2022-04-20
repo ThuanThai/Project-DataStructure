@@ -31,7 +31,12 @@ public class main {
                 String lName = scanner.nextLine();
                 System.out.print("Enter customer phone number: ");
                 String phone = scanner.nextLine();
-                database.put(new Customer(id,fName,lName,phone));
+                try{
+                    database.put(new Customer(id,fName,lName,phone));
+                }  catch (StringIndexOutOfBoundsException ex) {
+                    System.out.println("Invalid Input!!!");
+                }
+
                 break;
             case 2:
                 break;
@@ -52,6 +57,7 @@ public class main {
                         System.out.printf("%-20s%-20s%-20s%-20s",
                                 searchedCustomer.cusID,searchedCustomer.fName,
                                 searchedCustomer.lName,searchedCustomer.phone);
+                        System.out.println();
                     }
                 } catch (StringIndexOutOfBoundsException ex) {
                     System.out.println("Invalid input!!!");
