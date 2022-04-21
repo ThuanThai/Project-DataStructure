@@ -39,6 +39,10 @@ public class main {
 
                 break;
             case 2:
+                System.out.println("====== UPDATING A CUSTOMER ======");
+                System.out.print("Enter customer ID you want to update: ");
+                id = scanner.nextLine();
+                updateCustomer(id,database);
                 break;
             case 3:
                 // user search for a customer.
@@ -102,5 +106,66 @@ public class main {
             scanner.nextLine();
         }
         return choice;
+    }
+
+    public static void updateCustomer(String id, CustomerCollection database) {
+        Customer updatedCustomer = new Customer();
+        if(database.search(id) == null) {
+            System.out.println("Customer not found!!!");
+            return;
+        }
+        updatedCustomer = database.search(id).cus;
+        Scanner scanner = new Scanner(System.in);
+        int choice = 0;
+        while(choice != 5) {
+            System.out.println("1.Update ID.");
+            System.out.println("2.Update first name.");
+            System.out.println("3.Update last name.");
+            System.out.println("4.Update phone number.");
+            System.out.println("5.EXIT.");
+            choice = getChoice();
+            switch (choice) {
+                case 1:
+                    System.out.println("Current ID:" + updatedCustomer.cusID);
+                    System.out.print("Enter new ID: ");
+                    String newId = scanner.nextLine();
+                    try{
+                        updatedCustomer.cusID = newId;
+                    } catch (StringIndexOutOfBoundsException ex) {
+                        System.out.println("Invalid ID!!!");
+                    }
+                    break;
+                case 2:
+                    System.out.println("Current first name:" + updatedCustomer.fName);
+                    System.out.print("Enter new first name: ");
+                    String newFName = scanner.nextLine();
+                    try{
+                        updatedCustomer.fName = newFName;
+                    } catch (StringIndexOutOfBoundsException ex) {
+                        System.out.println("Invalid Input!!!");
+                    }
+                    break;
+                case 3:
+                    System.out.println("Current last name:" + updatedCustomer.lName);
+                    System.out.print("Enter new last name: ");
+                    String newLName = scanner.nextLine();
+                    try{
+                        updatedCustomer.lName = newLName;
+                    } catch (StringIndexOutOfBoundsException ex) {
+                        System.out.println("Invalid Input!!!");
+                    }
+                    break;
+                case 4:
+                    System.out.println("Current phone number:" + updatedCustomer.phone);
+                    System.out.print("Enter new phone number: ");
+                    String newPNumber = scanner.nextLine();
+                    try{
+                        updatedCustomer.phone = newPNumber;
+                    } catch (StringIndexOutOfBoundsException ex) {
+                        System.out.println("Invalid Input!!!");
+                    }
+                    break;
+            }
+        }
     }
 }
