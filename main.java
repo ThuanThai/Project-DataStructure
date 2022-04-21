@@ -86,7 +86,6 @@ public class main {
                 break;
         }
         System.out.println("==================================");
-        System.out.println();
     }
 
     public static void printMenu(){
@@ -102,7 +101,11 @@ public class main {
         Scanner scanner = new Scanner(System.in);
         while(choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5) {
             System.out.print("Enter your command here: ");
-            choice = scanner.nextInt();
+            try{
+                choice = scanner.nextInt();
+            } catch (InputMismatchException ex) {
+                System.out.println("Please only enter an integer!!!");
+            }
             scanner.nextLine();
         }
         return choice;
@@ -122,7 +125,7 @@ public class main {
             System.out.println("2.Update first name.");
             System.out.println("3.Update last name.");
             System.out.println("4.Update phone number.");
-            System.out.println("5.EXIT.");
+            System.out.println("5.BACK.");
             choice = getChoice();
             switch (choice) {
                 case 1:

@@ -63,8 +63,14 @@ public class CustomerCollection {
     public int hash(String id) {
         int res = 0;
         int n = 3;
+        char c;
         for (int i = 0; i < 3; i++) {
-            char c = id.charAt(i);
+            try {
+                c = id.charAt(i);
+            } catch (StringIndexOutOfBoundsException ex) {
+                System.out.println("Invalid ID!!!");
+                return -1;
+            }
             res += (int) c * Math.pow(31, --n);
         }
         return res % MAX;
@@ -140,6 +146,7 @@ public class CustomerCollection {
     }
     public CustomerNode search(String id) {
         int idx = hash(id);
+        if(idx == -1) return null;
         if (table[idx].cus.cusID.equals(id))
             return table[idx];
         else
@@ -163,6 +170,7 @@ public class CustomerCollection {
 
     public void searchPartial(String id) {
         int idx = hash(id);
+        if(idx == -1) return;
         Queue<CustomerNode> queue = new LinkedList<>();
         queue.add(table[idx]);
         System.out.printf("%-20s%-20s%-20s%-20s", "ID","FIRST NAME","LAST NAME","PHONE NUMBER");
