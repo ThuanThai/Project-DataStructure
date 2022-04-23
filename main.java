@@ -14,7 +14,6 @@ public class main {
             choice = getChoice();
             processChoice(choice,database);
         }
-
     }
 
     private static void processChoice(int choice, CustomerCollection database) {
@@ -23,20 +22,33 @@ public class main {
             case 1:
                 // user create new customer.
                 System.out.println("====== CREATING A NEW CUSTOMER ======");
+
+                // get all customer information
                 System.out.print("Enter customer Id: ");
                 String id = scanner.nextLine();
+
+                // id handling
+                // searchId will notify user if the input id is invalid
+                if(database.search(id) != null) {
+                    System.out.println("Customer already in database!!!");
+                    return;
+                }
+
                 System.out.print("Enter customer first name: ");
                 String fName = scanner.nextLine();
                 System.out.print("Enter customer last name: ");
                 String lName = scanner.nextLine();
                 System.out.print("Enter customer phone number: ");
                 String phone = scanner.nextLine();
+
+                // put the customer in the database
                 try{
                     database.put(new Customer(id,fName,lName,phone));
                 }  catch (StringIndexOutOfBoundsException ex) {
-                    System.out.println("Invalid Input!!!");
+                    System.out.println("Unable to add new customer due to INVALID INPUT!!!");
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    System.out.println("Unable to add new customer due to INVALID INPUT!!!");
                 }
-
                 break;
             case 2:
                 System.out.println("====== UPDATING A CUSTOMER ======");
@@ -120,25 +132,14 @@ public class main {
         updatedCustomer = database.search(id).cus;
         Scanner scanner = new Scanner(System.in);
         int choice = 0;
-        while(choice != 5) {
-            System.out.println("1.Update ID.");
-            System.out.println("2.Update first name.");
-            System.out.println("3.Update last name.");
-            System.out.println("4.Update phone number.");
-            System.out.println("5.BACK.");
+        while(choice != 4) {
+            System.out.println("1.Update first name.");
+            System.out.println("2.Update last name.");
+            System.out.println("3.Update phone number.");
+            System.out.println("4.BACK.");
             choice = getChoice();
             switch (choice) {
                 case 1:
-                    System.out.println("Current ID:" + updatedCustomer.cusID);
-                    System.out.print("Enter new ID: ");
-                    String newId = scanner.nextLine();
-                    try{
-                        updatedCustomer.cusID = newId;
-                    } catch (StringIndexOutOfBoundsException ex) {
-                        System.out.println("Invalid ID!!!");
-                    }
-                    break;
-                case 2:
                     System.out.println("Current first name:" + updatedCustomer.fName);
                     System.out.print("Enter new first name: ");
                     String newFName = scanner.nextLine();
@@ -148,7 +149,7 @@ public class main {
                         System.out.println("Invalid Input!!!");
                     }
                     break;
-                case 3:
+                case 2:
                     System.out.println("Current last name:" + updatedCustomer.lName);
                     System.out.print("Enter new last name: ");
                     String newLName = scanner.nextLine();
@@ -158,7 +159,7 @@ public class main {
                         System.out.println("Invalid Input!!!");
                     }
                     break;
-                case 4:
+                case 3:
                     System.out.println("Current phone number:" + updatedCustomer.phone);
                     System.out.print("Enter new phone number: ");
                     String newPNumber = scanner.nextLine();
