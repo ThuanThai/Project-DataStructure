@@ -9,6 +9,7 @@ import java.util.Queue;
 
 public class CustomerCollection {
     final static int MAX = 113;
+    static private int count = 0;
     CustomerNode[] table = new CustomerNode[MAX];
 
     static class CustomerNode {
@@ -168,26 +169,45 @@ public class CustomerCollection {
         }
     }
 
-    public void searchPartial(String id) {
-        int idx = hash(id);
-        if(idx == -1) return;
-        Queue<CustomerNode> queue = new LinkedList<>();
-        queue.add(table[idx]);
-        System.out.printf("%-20s%-20s%-20s%-20s", "ID","FIRST NAME","LAST NAME","PHONE NUMBER");
-        System.out.println();
-        while (!queue.isEmpty()) {
-            CustomerNode root = queue.remove();
-            if(root.cus.cusID.contains(id)) {
-                System.out.printf("%-20s%-20s%-20s%-20s",
-                        root.cus.cusID,root.cus.fName,
-                        root.cus.lName,root.cus.phone);
-                System.out.println();
+//    public void searchPartial(String id) {
+//        int idx = hash(id);
+//        if(idx == -1) return;
+//        Queue<CustomerNode> queue = new LinkedList<>();
+//        queue.add(table[idx]);
+//        System.out.printf("%-20s%-20s%-20s%-20s", "ID","FIRST NAME","LAST NAME","PHONE NUMBER");
+//        System.out.println();
+//        while (!queue.isEmpty()) {
+//            CustomerNode root = queue.remove();
+//            if(root.cus.cusID.contains(id)) {
+//                System.out.printf("%-20s%-20s%-20s%-20s",
+//                        root.cus.cusID,root.cus.fName,
+//                        root.cus.lName,root.cus.phone);
+//                System.out.println();
+//            }
+//            if (root.left != null)
+//                queue.add(root.left);
+//            if (root.right != null)
+//                queue.add(root.right);
+//        }
+//    }
+    private void inOrder(CustomerNode node, String id){
+        if (node != null) {
+            inOrder(node.left, id);
+            if (count > 9)
+                return;
+            if(node.cus.cusID.contains(id)) {
+                System.out.printf("%-20s%-20s%-20s%-20s\n",
+                        node.cus.cusID, node.cus.fName,
+                        node.cus.lName, node.cus.phone);
+                count++;
             }
-            if (root.left != null)
-                queue.add(root.left);
-            if (root.right != null)
-                queue.add(root.right);
+            inOrder(node.right, id);
         }
+    }
+    public void searchPartial(String id){
+        int idx = hash(id);
+        inOrder(table[idx], id);
+        count = 0;
     }
 
     public static void main(String[] args) {
