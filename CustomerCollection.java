@@ -206,6 +206,7 @@ public class CustomerCollection {
     }
     public void searchPartial(String id){
         int idx = hash(id);
+        System.out.printf("%-20s%-20s%-20s%-20s\n", "ID","FIRST NAME","LAST NAME","PHONE NUMBER");
         inOrder(table[idx], id);
         count = 0;
     }
