@@ -82,8 +82,10 @@ public class CustomerCollection {
             node.left = putInTree(node.left, newCustomer);
         else if (newCustomer.cusID.compareTo(node.cus.cusID) > 0)
             node.right = putInTree(node.right, newCustomer);
-        else
+        else{
+            System.out.println("ID already in database!!!");
             return node;
+        }
 
         node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
         int balance = getBalance(node);

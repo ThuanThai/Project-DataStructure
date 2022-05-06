@@ -27,13 +27,6 @@ public class main {
                 System.out.print("Enter customer Id: ");
                 String id = scanner.nextLine();
 
-                // id handling
-                // searchId will notify user if the input id is invalid
-                if(database.search(id) != null) {
-                    System.out.println("Customer already in database!!!");
-                    return;
-                }
-
                 System.out.print("Enter customer first name: ");
                 String fName = scanner.nextLine();
                 System.out.print("Enter customer last name: ");
